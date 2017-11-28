@@ -2,6 +2,7 @@
 // @flow
 import "babel-polyfill"
 import program from "commander"
+import { readFileSync } from "fs"
 import parse from "./lib/markdownParse"
 
 program
@@ -10,7 +11,8 @@ program
   .parse(process.argv)
 
 const start = async () => {
-  const res = await parse("#header\n\nHello, world!\n#test\naaa\nbbbb")
+  const contents = await readFileSync("./examples/qiita.md", "utf8")
+  const res = await parse(contents)
   await console.log(JSON.stringify(res, null, "  "))
 }
 

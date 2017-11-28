@@ -1,6 +1,7 @@
 // @flow
 const MATCH_HEADER = /^#/
 const MATCH_HEADER_STRING = /^#+\s*(.+)\s*$/
+const REPLACE_WORD = "DWT5xkgI"
 
 const parseContent = async (rows) => {
   let header
@@ -10,9 +11,6 @@ const parseContent = async (rows) => {
   await Promise.all(
     rows.map(async (row) => {
       if (MATCH_HEADER.test(row)) {
-        // if (header) header.body = await stringifyBody(header.body)
-        // create the new headerObj
-
         header = {
           head: row,
           body: []
@@ -22,20 +20,31 @@ const parseContent = async (rows) => {
 
         content[key] = await header
       } else {
-        await header.body.push(row)
+        await header.body.push(row.replace(REPLACE_WORD, "#"))
       }
 
       return true
     })
   )
 
-  // header.body = await stringifyBody(header.body)
-
   return content
 }
 
+const parseCode = async (markdown) => {
+  const list = await markdown.split("```").map((text, index) => {
+    if (index % 2 === 0) {
+      return text
+    }
+
+    return text.replace("#", REPLACE_WORD)
+  })
+
+  return list.join("```")
+}
+
 export default async (markdown) => {
-  const rows = await markdown.split("\n")
+  const text = await parseCode(markdown)
+  const rows = await text.split("\n")
   const items = await parseContent(rows)
 
   return items
