@@ -3,7 +3,7 @@
 import "babel-polyfill"
 import program from "commander"
 import { readFileSync } from "fs"
-import parse from "./lib/markdownParse"
+import parse from "./lib/parse"
 
 program
   .usage("[options] <url> <output>")
